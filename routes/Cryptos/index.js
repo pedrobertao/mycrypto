@@ -9,16 +9,14 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, FlatList } from 'react-native'
 import { Text, ListItem, Thumbnail, Left, Body, Right } from 'native-base'
-import axios from 'axios'
 import { LinearGradient, Defs, Stop } from 'react-native-svg'
 import { LineChart, Grid } from 'react-native-svg-charts'
 import BigNumber from 'bignumber.js'
 import { Container } from '../../components/elements'
+import coinGecko from '../../services/coingecko'
 
 const MAINCOLOR = '#4cff9c'
-const coinGecko = axios.create({
-  baseURL: 'https://api.coingecko.com/api/v3'
-})
+
 // export default class App extends Component {
 //   render () {
 //     return (
@@ -41,8 +39,10 @@ export default ({ navigation }) => {
     setCoin({ loading: true });
     (async () => {
       try {
-        const { data } = await coinGecko.get('/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=24h')
+        // const { data } = await coinGecko.get('/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=true&price_change_percentage=24h')
+        const data = require('./mockCrypto.json')
         setCoin({ data, loading: false })
+        navigateToDetail(data[0])
       } catch (error) {
         console.warn('====>', error.message)
         setCoin({ loading: false, error: true })

@@ -9,6 +9,18 @@
 import { createAppContainer, createStackNavigator, createDrawerNavigator } from 'react-navigation'
 import Cryptos from './Cryptos'
 import CryptoDetail from './CryptoDetail'
+import Reactotron from 'reactotron-react-native'
+
+Reactotron
+  .configure() // controls connection & communication settings
+  .useReactNative() // add all built-in react native plugins
+  .connect() // let's connect!
+
+console.log = (...msg) => Reactotron.display({
+  name: 'MyCrypto',
+  value: msg,
+  preview: msg[0]
+})
 
 const cryptoStack = createStackNavigator({
   list: Cryptos,
