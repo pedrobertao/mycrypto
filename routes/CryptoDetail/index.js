@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Image } from 'react-native'
-import keys from 'lodash/keys'
+import { Image, ActivityIndicator } from 'react-native'
 
 import { Container, Text, View, systemColors } from '../../components/elements'
 // import MyCrypto from '../../services/coins'
@@ -25,10 +24,10 @@ const CryptoDetail = props => {
         setMarketChart({ ...chartData, loading: true })
         const { data } = await coinGecko.get(`/coins/${id}/market_chart/range?vs_currency=usd&from=${from}&to=${to}`)
         console.log('====> Data', data)
-        setMarketChart({ ...chartData, prices: data.prices, loading: true })
+        setMarketChart({ ...chartData, prices: data.prices, loading: false })
       } catch (error) {
         console.log('====>Error Data', error, error.message)
-        setMarketChart({ ...chartData, loading: true })
+        setMarketChart({ ...chartData, loading: false })
       }
     }
     getPrices(crypto.id, chartData.from)
@@ -42,10 +41,12 @@ const CryptoDetail = props => {
       fill={'none'}
     />
   )
-  console.log('Sup man', chartData)
+
   return (
     <Container>
-
+      <TouchableOpacity onPress={props.navigation.goBack}>
+        <Text>Voltar</Text>
+      </TouchableOpacity>
       <View style={{ paddingVertical: 50 }} align='center'>
         <Image source={{ uri: crypto.image }} style={{ height: 50, width: 50 }} />
         <Text>
@@ -55,6 +56,7 @@ const CryptoDetail = props => {
         <Text size={16} style={{ color: crypto.price_change_percentage_24h > 0 ? '#59ebff' : '#fc1e51' }}>{crypto.price_change_percentage_24h.toFixed(2)}%</Text>
       </View>
 
+      {chartData.loading && <ActivityIndicator />}
       <AreaChart
         style={{ height: 200 }}
         data={chartData.prices}
@@ -68,7 +70,7 @@ const CryptoDetail = props => {
       <View style={{ marginVertical: 10 }} row justify='space-around'>
         {options.map(option => (
           <TouchableOpacity onPress={() => setMarketChart({ ...chartData, from: option })} key={option}>
-            <View style={{ width: '100%', borderRadius: 4, borderWidth: 1, padding: 5, borderColor: 'rgba(179, 255, 229, 0.5)' }}>
+            <View style={{ width: '100%', padding: 5 }}>
               <Text style={{ color: option === chartData.from ? systemColors.green : 'rgba(255,255,255,0.2)' }}>1 {option.toUpperCase()}</Text>
             </View>
           </TouchableOpacity>
