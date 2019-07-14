@@ -14,7 +14,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { Text, View } from '../../components/elements'
 
 const Item = ({ item, index, onPress }) => (
-  <TouchableOpacity>
+  <TouchableOpacity onPress={onPress}>
     <LinearGradient
       colors={['#28324A', '#3e4d73']}
       start={{ x: 0, y: 0 }}

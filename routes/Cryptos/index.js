@@ -7,16 +7,14 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, FlatList } from 'react-native'
+import { FlatList } from 'react-native'
 import includes from 'lodash/includes'
 import LinearGradient from 'react-native-linear-gradient'
 
-import { Container, View, Text } from '../../components/elements'
+import { Container, View, Text, systemColors } from '../../components/elements'
 import CryptoItem from './item'
 
 import coinGecko from '../../services/coingecko'
-
-const MAINCOLOR = '#4cff9c'
 
 const myCoins = [
   'bitcoin', 'tron', 'ethereum'
@@ -57,19 +55,23 @@ export default ({ navigation }) => {
   )
 
   return (
-    <React.Fragment>
-      <LinearGradient
-        colors={['#25304C', '#121722']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={{ height: '100%',
-          width: '100%',
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0 }} />
+    <LinearGradient
+      colors={['#25304C', '#121722']}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
+      style={{ height: '100%',
+        width: '100%',
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0 }}>
       <Container background='transparent'>
-        <Text style={styles.welcome}>MINHA CRYPTO</Text>
+        <Text font='regular' style={{
+          fontSize: 20,
+          textAlign: 'center',
+          margin: 10,
+          color: systemColors.white
+        }}>MINHA CRYPTO</Text>
         <View style={{ flex: 1, paddingHorizontal: 30 }}>
           <Text>Minhas Cryptos</Text>
           <View flex={0.5}>
@@ -90,28 +92,6 @@ export default ({ navigation }) => {
 
         </View>
       </Container>
-
-    </React.Fragment>
-
+    </LinearGradient>
   )
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#050505'
-  },
-  text: {
-    color: MAINCOLOR
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-    color: MAINCOLOR
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5
-  }
-})
