@@ -6,10 +6,12 @@
  * @flow
  */
 
+import { PushNotificationIOS } from 'react-native'
 import { createAppContainer, createStackNavigator, createDrawerNavigator } from 'react-navigation'
 import Cryptos from './Cryptos'
 import CryptoDetail from './CryptoDetail'
 import Reactotron from 'reactotron-react-native'
+import PushNotification from 'react-native-push-notification'
 
 Reactotron
   .configure() // controls connection & communication settings
@@ -29,8 +31,24 @@ const cryptoStack = createStackNavigator({
   headerMode: 'none'
 })
 
-const drawerNavigator = createDrawerNavigator({
-  home: cryptoStack
+// const drawerNavigator = createDrawerNavigator({
+//   home: cryptoStack
+// })
+
+PushNotification.configure({
+  // (optional) Called when Token is generated (iOS and Android)
+  onRegister: function (token) {
+    console.log('TOKEN:', token)
+  },
+  // (required) Called when a remote or local notification is opened or received
+  onNotification: function (notification) {
+    console.log('NOTIFICATION:', notification)
+    notification.finish(PushNotificationIOS.FetchResult.NoData)
+  },
+  // Should the initial notification be popped automatically
+  // default: true
+  popInitialNotification: true,
+  requestPermissions: true
 })
 
-export default createAppContainer(drawerNavigator)
+export default createAppContainer(cryptoStack)
