@@ -11,7 +11,7 @@ import { Image, TouchableOpacity } from 'react-native'
 import BigNumber from 'bignumber.js'
 import LinearGradient from 'react-native-linear-gradient'
 
-import { Text, View } from '../../components/elements'
+import { Text, View, systemColors } from '../../components/elements'
 
 const Item = ({ item, index, onPress }) => (
   <TouchableOpacity onPress={onPress}>
@@ -36,8 +36,8 @@ const Item = ({ item, index, onPress }) => (
           <Text font='bold' size={16}>{new BigNumber(item.current_price).precision(4).toFormat()} $</Text>
         </View>
         <View align='center' justify='space-between' row>
-          <Text color='#8f9fc4' font='regular' size={12}>Rank {item.market_cap_rank}</Text>
-          <Text color={item.price_change_percentage_24h > 0 ? '#6AC8C9' : '#cc6a6a'}
+          <Text secondary font='regular' size={12}>Rank {item.market_cap_rank}</Text>
+          <Text color={item.price_change_percentage_24h > 0 ? systemColors.blue : systemColors.lightRed}
             size={14}>{new BigNumber(item.price_change_percentage_24h).toFixed(2)}</Text>
         </View>
       </View>

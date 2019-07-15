@@ -65,6 +65,10 @@ class NotificationServices {
       message // (required)
     })
   }
+
+  isFollowing = (id) => {
+    return !!this._coins[id]
+  }
   follow = ({id, high = Number.MAX_SAFE_INTEGER, low = 0 }) => {
     this._coins[id] = { high, low }
   }

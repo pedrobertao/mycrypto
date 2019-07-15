@@ -9,11 +9,9 @@
 import React, { useState, useEffect } from 'react'
 import { FlatList } from 'react-native'
 import includes from 'lodash/includes'
-import LinearGradient from 'react-native-linear-gradient'
 
-import { Container, View, Text, systemColors } from '../../components/elements'
+import { GradientContainer, Container, View, Text, systemColors } from '../../components/elements'
 import CryptoItem from './item'
-
 import coinGecko from '../../services/coingecko'
 
 const myCoins = [
@@ -30,13 +28,14 @@ export default ({ navigation }) => {
     setCoins({ loading: true });
     (async () => {
       try {
-        const cryptoCoins = await coinGecko.getCoins()
-        // const cryptoCoins = require('./mockCrypto.json')
+        // const cryptoCoins = await coinGecko.getCoins()
+        const cryptoCoins = require('./mockCrypto.json')
         setCoins({
           loading: false,
           myCoins: cryptoCoins.filter(c => includes(myCoins, c.id)),
           otherCoins: cryptoCoins.filter(c => !includes(myCoins, c.id))
         })
+        navigateToDetail(cryptoCoins[0])
       } catch (error) {
         console.warn('====>', error.message)
         setCoins({ loading: false, error: true })
@@ -55,16 +54,7 @@ export default ({ navigation }) => {
   )
 
   return (
-    <LinearGradient
-      colors={['#25304C', '#121722']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 0, y: 1 }}
-      style={{ height: '100%',
-        width: '100%',
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0 }}>
+    <GradientContainer>
       <Container background='transparent'>
         <Text font='regular' style={{
           fontSize: 20,
@@ -92,6 +82,6 @@ export default ({ navigation }) => {
 
         </View>
       </Container>
-    </LinearGradient>
+    </GradientContainer>
   )
 }
