@@ -8,15 +8,14 @@
 
 import React, { useState, useEffect } from 'react'
 import { FlatList } from 'react-native'
-import includes from 'lodash/includes'
 
 import { GradientContainer, Container, View, Text, systemColors } from '../../components/elements'
 import CryptoItem from './item'
 import coinGecko from '../../services/coingecko'
 
-const myCoins = [
-  'bitcoin', 'tron', 'ethereum'
-]
+import UserCoins from '../../services/notification/coinsRealm'
+
+UserCoins.init()
 export default ({ navigation }) => {
   const [coins, setCoins] = useState({
     loading: true,
@@ -24,23 +23,30 @@ export default ({ navigation }) => {
     otherCoins: [],
     error: false
   })
+
+  const updateCoins = async () => {
+    setCoins({ loading: true })
+    try {
+      console.log('=======>Changing coin')
+      const coins = UserCoins.getCoins()
+      const cryptoCoins = await coinGecko.getCoins()
+      // const cryptoCoins = require('./mockCrypto.json')
+      setCoins({
+        loading: false,
+        myCoins: cryptoCoins.filter(c => !!coins[c.id]),
+        otherCoins: cryptoCoins.filter(c => !coins[c.id]),
+        error: false
+      })
+      // navigateToDetail(cryptoCoins[0])
+    } catch (error) {
+      console.warn('====>', error.message)
+      setCoins({ loading: false, error: true })
+    }
+  }
+
   useEffect(() => {
-    setCoins({ loading: true });
-    (async () => {
-      try {
-        // const cryptoCoins = await coinGecko.getCoins()
-        const cryptoCoins = require('./mockCrypto.json')
-        setCoins({
-          loading: false,
-          myCoins: cryptoCoins.filter(c => includes(myCoins, c.id)),
-          otherCoins: cryptoCoins.filter(c => !includes(myCoins, c.id))
-        })
-        navigateToDetail(cryptoCoins[0])
-      } catch (error) {
-        console.warn('====>', error.message)
-        setCoins({ loading: false, error: true })
-      }
-    })()
+    // navigation.addListener('didFocus', updateCoins)
+    updateCoins()
   }, [])
 
   const navigateToDetail = crypto => navigation.navigate('detail', { crypto })

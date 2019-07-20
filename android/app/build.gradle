@@ -138,6 +138,7 @@ android {
 }
 
 dependencies {
+    implementation project(':realm')
     implementation project(':react-native-vector-icons')
     implementation project(':react-native-background-timer')
     implementation project(':react-native-randombytes')
