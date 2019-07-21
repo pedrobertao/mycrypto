@@ -14,7 +14,10 @@ import Reactotron from 'reactotron-react-native'
 import PushNotification from 'react-native-push-notification'
 
 Reactotron
-  .configure() // controls connection & communication settings
+  .configure({
+    enabled: true,
+    host: '192.168.0.12' // server ip
+  }) // controls connection & communication settings
   .useReactNative() // add all built-in react native plugins
   .connect() // let's connect!
 

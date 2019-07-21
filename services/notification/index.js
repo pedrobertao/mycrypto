@@ -55,14 +55,15 @@ class NotificationServices {
     let messageNotification = null
 
     const pushNotification = message => {
+      console.log('=======Pushing', message)
       UserCoins.setCoin({ id: coin.id, ...this._coins[coin.id]})
       PushNotification.localNotification({
-        bigText: 'Hello from MinhaCrypto androiders', // (optional) default: "message" prop
-        subText: 'This is the subtext for minhacrypto', // (optional) default: none
+        // bigText: 'Hello from MinhaCrypto androiders', // (optional) default: "message" prop
+        // subText: 'This is the subtext for minhacrypto', // (optional) default: none
         vibrate: true, // (optional) default: true
         vibration: 300, // vibration length in milliseconds, ignored if vibrate=false, default: 1000
-        tag: 'MinhaCryptoNotifications', // (optional) add tag to message
-        title: 'MinhaCrypto', // (optional)
+        tag: 'MyCryptoNotifications', // (optional) add tag to message
+        title: 'MyCrypto', // (optional)
         message // (required)
       })
     }
