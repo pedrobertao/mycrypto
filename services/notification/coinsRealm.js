@@ -75,6 +75,9 @@ UserCoins.removeCoin = id => {
 
 UserCoins.getCoins = () => {
   const userCoins = {}
+  if (!UserCoins.objects(Coin.name).length) {
+    UserCoins.init()
+  }
   UserCoins.objects(Coin.name).filter(c => c.follow === true).forEach(c => {
     userCoins[c.id] = {
       high: c.high,
@@ -82,7 +85,6 @@ UserCoins.getCoins = () => {
       follow: true
     }
   })
-  console.log('==== wtf man', UserCoins.objects(Coin.name), userCoins)
   return userCoins
 }
 
@@ -91,6 +93,7 @@ UserCoins.init = () => {
     UserCoins.setCoin({ id: 'bitcoin' })
     UserCoins.setCoin({ id: 'ethereum' })
     UserCoins.setCoin({ id: 'tron' })
+    console.log('INITED !')
   }
 }
 export default UserCoins

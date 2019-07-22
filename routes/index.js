@@ -31,7 +31,6 @@ const cryptoStack = createStackNavigator({
 //   home: cryptoStack
 // })
 
-UserCoins.init()
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
   onRegister: function (token) {
