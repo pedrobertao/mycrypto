@@ -1,55 +1,77 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import React, { useState, useEffect } from 'react'
 import { FlatList } from 'react-native'
 
 import { GradientContainer, Container, View, Text, systemColors } from '../../components/elements'
 import CryptoItem from './item'
-import coinGecko from '../../services/coingecko'
+import Notifications from '../../services/notification'
 
-import UserCoins from '../../services/notification/coinsRealm'
-
-UserCoins.init()
-export default ({ navigation }) => {
+const useCoins = (navigation) => {
   const [coins, setCoins] = useState({
     loading: true,
+    coins: [],
     myCoins: [],
     otherCoins: [],
     error: false
   })
 
-  const updateCoins = async () => {
-    setCoins({ loading: true })
+  const updateCoins = async (type, cryptoCoins) => {
+    if (type !== 'fetch') return
+    setCoins(coins => ({ ...coins, loading: true }))
     try {
-      console.log('=======>Changing coin')
-      const coins = UserCoins.getCoins()
-      const cryptoCoins = await coinGecko.getCoins()
       // const cryptoCoins = require('./mockCrypto.json')
-      setCoins({
+      setCoins(coins => ({
+        ...coins,
         loading: false,
-        myCoins: cryptoCoins.filter(c => !!coins[c.id]),
-        otherCoins: cryptoCoins.filter(c => !coins[c.id]),
+        coins: cryptoCoins,
+        myCoins: cryptoCoins.filter(c => !!Notifications.coins[c.id]),
+        otherCoins: cryptoCoins.filter(c => !Notifications.coins[c.id]),
         error: false
-      })
+      }))
       // navigateToDetail(cryptoCoins[0])
     } catch (error) {
       console.warn('====>', error.message)
-      setCoins({ loading: false, error: true })
+      setCoins(coins => ({ ...coins, loading: false, error: true }))
     }
   }
 
+  const didFocusUpdate = () => {
+    setCoins(prevCoins => ({
+      ...prevCoins,
+      myCoins: prevCoins.coins.filter(c => !!Notifications.coins[c.id]),
+      otherCoins: prevCoins.coins.filter(c => !Notifications.coins[c.id])
+    }))
+  }
+
   useEffect(() => {
-    // navigation.addListener('didFocus', updateCoins)
-    updateCoins()
+    navigation.addListener('didFocus', didFocusUpdate)
+    Notifications.addListener(updateCoins)
+    return () => {
+      Notifications.removeListener(updateCoins)
+      navigation.removeListener(didFocusUpdate)
+    }
   }, [])
 
+  return coins
+}
+
+export default ({ navigation }) => {
+  const coins = useCoins(navigation)
   const navigateToDetail = crypto => navigation.navigate('detail', { crypto })
+
+  // const [test, setTest] = useState(false)
+  // useEffect(() => {
+  //   navigation.addListener('didFocus', () => {
+  //     useEffect(() => {
+  //       console.log('E AE MANO ?!?!?!?!', coins)
+  //     }, [coins])
+  //   })
+  // }, [])
+  const renderEmptyList = () => (
+    <Text secondary>{
+      coins.loading
+        ? 'Loading coins..'
+        : 'Follow your favorite coin bellow'}</Text>
+  )
 
   const renderItem = ({ item, index }) => (
     <CryptoItem
@@ -58,7 +80,6 @@ export default ({ navigation }) => {
       onPress={navigateToDetail.bind(null, item)}
     />
   )
-
   return (
     <GradientContainer>
       <Container background='transparent'>
@@ -68,16 +89,18 @@ export default ({ navigation }) => {
           margin: 10,
           color: systemColors.white
         }}>MINHA CRYPTO</Text>
-        <View style={{ flex: 1, paddingHorizontal: 30 }}>
-          <Text>Minhas Cryptos</Text>
+
+        <View flex={1} paddingX={30}>
+          <Text>My Cryptos</Text>
           <View flex={0.5}>
             <FlatList
               keyExtractor={item => item.id}
+              ListEmptyComponent={renderEmptyList}
               data={coins.myCoins}
               renderItem={renderItem}
             />
           </View>
-          <Text>Outras Cryptos</Text>
+          <Text>More Cryptos</Text>
           <View flex={0.5}>
             <FlatList
               keyExtractor={item => item.id}
@@ -85,7 +108,6 @@ export default ({ navigation }) => {
               renderItem={renderItem}
             />
           </View>
-
         </View>
       </Container>
     </GradientContainer>

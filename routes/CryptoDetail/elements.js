@@ -1,8 +1,10 @@
 import React from 'react'
-
+import { ActivityIndicator } from 'react-native'
 import { AreaChart } from 'react-native-svg-charts'
+import LinearGradient from 'react-native-linear-gradient'
 import { Path, Defs, LinearGradient as LinearGradientSvg, Stop } from 'react-native-svg'
-import { systemColors } from '../../components/elements'
+
+import { View, Text, systemColors } from '../../components/elements'
 
 const Line = ({ line }) => (
   <Path
@@ -34,3 +36,28 @@ export const Chart = ({ data }) => (
     <Gradient />
   </AreaChart>
 )
+
+export const FollowGradient = () => (
+  <LinearGradient
+    colors={systemColors.cardGradient}
+    start={{ x: 0.3, y: 0 }}
+    end={{ x: 1, y: 0 }}
+    style={{ borderRadius: 4, position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+  />
+)
+
+export const GraphOption = ({ selected, children }) => (
+  <View width='100%' padding={5}>
+    <Text style={{ color: selected ? systemColors.blue : 'rgba(255,255,255,0.2)' }}>
+    1 {children}
+    </Text>
+  </View>
+)
+
+export const GraphLoading = ({ loading }) => (
+  loading && (
+    <ActivityIndicator
+      style={{ transform: [{ translateY: 40 }] }}
+      color={systemColors.secondary}
+    />
+  ))

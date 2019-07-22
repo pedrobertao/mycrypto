@@ -15,41 +15,44 @@ class NotificationServices {
   _trackCoinsJob = null;
   _currentJobState = 0;
   _listeners = []
+
   constructor () {
     this._init()
     this._coins = UserCoins.getCoins()
   }
 
+  get coins () {
+    return this._coins
+  }
 
   _init = () => {
     if(this._currentJobState === JOB_STATE.WAITING){
+      this._currentJobState = JOB_STATE.RUNNING
       this._trackCoins()
     }
   }
 
   _trackCoins = () => {
-    BackgroundTimer.stopBackgroundTimer()
-    BackgroundTimer.runBackgroundTimer(async () => { 
+    const getCoins = async () => {
+      try {
         const data = await coinGecko.getCoins()
         console.log('=====Service running on Background!', data)
-        this._listeners.forEach(l=>{l(data)})
-        for(let coin of data ) {
+        this._listeners.forEach(cb=> { cb('fetch',data) })
+        for(const coin of data ) {
           if(this._coins[coin.id]){
             console.log('Processing coin',coin.current_price, this._coins)
             this._processCoinPrice(coin)
           }
         }
-    },5000)
+      } catch (error) {
+        console.log('====>Error on background Service', error)
+      }
+    }
+    getCoins()
+    BackgroundTimer.stopBackgroundTimer()
+    // BackgroundTimer.runBackgroundTimer(getCoins,10000)
   }
 
-  addListener = cb => {
-    this._listeners.push(cb)
-  }
-
-  removeListener = cb => {
-    this._listeners = this._listeners.filter(l => l !== cb)
-  }
-  
   _processCoinPrice = coin => {
     const { high, low } = this._coins[coin.id]
     let messageNotification = null
@@ -80,21 +83,29 @@ class NotificationServices {
   
   }
 
+
+  addListener = cb => {
+    this._listeners.push(cb)
+  }
+
+  removeListener = cb => {
+    this._listeners = this._listeners.filter(l => l !== cb)
+  }
+
   isFollowing = id => {
-    console.log('=====IsFollowing ? ', this._coins[id])
     return !!this._coins[id]
   }
 
   follow = ({id, high = Number.MAX_SAFE_INTEGER, low = 0 }) => {
-    console.log('======>Followin', id, high, low)
     this._coins[id] = { high: Number(high), low: Number(low) }
     UserCoins.setCoin({ id })
+    this._listeners.map(cb => cb('follow', id))
   }
 
   unfollow = (id) => {
-    this._coins[id] = null
-    console.log('=====Unfollowing', id)
     UserCoins.removeCoin(id)
+    this._coins[id] = null
+    this._listeners.map(cb => cb('unfollow', id))
   }
 
   close = () => {

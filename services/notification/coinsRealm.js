@@ -78,7 +78,8 @@ UserCoins.getCoins = () => {
   UserCoins.objects(Coin.name).filter(c => c.follow === true).forEach(c => {
     userCoins[c.id] = {
       high: c.high,
-      low: c.low
+      low: c.low,
+      follow: true
     }
   })
   console.log('==== wtf man', UserCoins.objects(Coin.name), userCoins)
@@ -86,10 +87,10 @@ UserCoins.getCoins = () => {
 }
 
 UserCoins.init = () => {
-  if (!Object.keys(UserCoins.getCoins()).length) {
+  if (!(UserCoins.objects(Coin.name).length)) {
     UserCoins.setCoin({ id: 'bitcoin' })
+    UserCoins.setCoin({ id: 'ethereum' })
     UserCoins.setCoin({ id: 'tron' })
-    // UserCoins.setCoin({ id: 'trx' })
   }
 }
 export default UserCoins

@@ -9,7 +9,8 @@ export const systemColors = {
   red: '#fc1e51',
   white: '#e8e8e8',
   lightRed: '#cc6a6a',
-  secondary: '#8f9fc4'
+  secondary: '#8f9fc4',
+  cardGradient: ['#28324A', '#3e4d73']
 }
 
 export const Container = styled.SafeAreaView`
@@ -29,7 +30,7 @@ export const Text = styled.Text`
 
 Text.defaultProps = {
   color: systemColors.white,
-  size: 18,
+  size: 16,
   font: 'Medium'
 }
 
@@ -38,9 +39,14 @@ export const View = styled.View`
   ${({ justify }) => justify && `justify-content:${justify}`}
   ${({ flex }) => flex && `flex:${flex}`}
   ${({ row }) => row && `flex-direction:row`}
-  ${({ width }) => width && `width: ${width}px`}
-  ${({ height }) => height && `height: ${height}px`}
+  ${({ width }) => width && `width: ${width}`}
+  ${({ height }) => height && `height: ${height}`}
   ${({ background }) => background && `background-color: ${background}`};
+  ${({ marginX }) => marginX && `margin-horizontal: ${marginX}px`};
+  ${({ marginY }) => marginY && `margin-vertical: ${marginY}px`};
+  ${({ paddingX }) => paddingX && `padding-horizontal: ${paddingX}px`};
+  ${({ paddingY }) => paddingY && `padding-vertical: ${paddingY}px`};
+  ${({ padding }) => padding && `padding: ${padding}px`};
 `
 
 export const GradientContainer = ({ children }) => (

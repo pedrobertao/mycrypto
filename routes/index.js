@@ -1,17 +1,10 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
 import { PushNotificationIOS } from 'react-native'
-import { createAppContainer, createStackNavigator, createDrawerNavigator } from 'react-navigation'
+import { createAppContainer, createStackNavigator } from 'react-navigation'
 import Cryptos from './Cryptos'
 import CryptoDetail from './CryptoDetail'
 import Reactotron from 'reactotron-react-native'
 import PushNotification from 'react-native-push-notification'
+import UserCoins from '../services/notification/coinsRealm'
 
 Reactotron
   .configure({
@@ -38,6 +31,7 @@ const cryptoStack = createStackNavigator({
 //   home: cryptoStack
 // })
 
+UserCoins.init()
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)
   onRegister: function (token) {
