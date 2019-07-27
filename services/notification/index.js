@@ -50,7 +50,7 @@ class NotificationServices {
     }
     getCoins()
     BackgroundTimer.stopBackgroundTimer()
-    // BackgroundTimer.runBackgroundTimer(getCoins,10000)
+    BackgroundTimer.runBackgroundTimer(getCoins,10000)
   }
 
   _processCoinPrice = coin => {
@@ -58,7 +58,6 @@ class NotificationServices {
     let messageNotification = null
 
     const pushNotification = message => {
-      console.log('=======Pushing', message)
       UserCoins.setCoin({ id: coin.id, ...this._coins[coin.id]})
       PushNotification.localNotification({
         // bigText: 'Hello from MinhaCrypto androiders', // (optional) default: "message" prop
@@ -72,11 +71,11 @@ class NotificationServices {
     }
     if(Number(coin.current_price) < low) {
       this._coins[coin.id].low = 0
-      pushNotification(`${coin.symbol.toUpperCase()} ficou abaixo de ${low} e está valendo ${coin.current_price}`)
+      pushNotification(`${coin.symbol.toUpperCase()} is bellow ${low} with ${coin.current_price} price`)
     }
     if(Number(coin.current_price) > high) { 
       this._coins[coin.id].high = Number.MAX_SAFE_INTEGER
-      pushNotification(`${coin.symbol.toUpperCase()} ficou acima de ${high} e está valendo ${coin.current_price}`)
+      pushNotification(`${coin.symbol.toUpperCase()} is above ${high} with ${coin.current_price} price`)
     }
 
     if(messageNotification) this.pushNotification(messageNotification)
