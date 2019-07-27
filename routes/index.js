@@ -1,9 +1,10 @@
 import { PushNotificationIOS } from 'react-native'
 import { createAppContainer, createStackNavigator } from 'react-navigation'
+import PushNotification from 'react-native-push-notification'
+import Reactotron from 'reactotron-react-native'
+
 import Cryptos from './Cryptos'
 import CryptoDetail from './CryptoDetail'
-import Reactotron from 'reactotron-react-native'
-import PushNotification from 'react-native-push-notification'
 import UserCoins from '../services/notification/coinsRealm'
 
 Reactotron
