@@ -14,6 +14,7 @@ const CryptoDetail = props => {
   const crypto = props.navigation.getParam('crypto', {})
 
   const { high: currentHigh, low: currentLow } = NotificationServices.getCoin(crypto.id)
+
   const [currentPrice, setCurrentPrice] = useState(crypto.current_price)
   const [chartData, setMarketChart] = useState({ from: 'day', prices: [], loading: true })
   const [isFollowing, setIsFollowing] = useState(NotificationServices.isFollowing(crypto.id))
@@ -128,12 +129,14 @@ const CryptoDetail = props => {
                 type='high'
                 onSet={onSetValues}
                 initialValue={String(currentHigh)}
+                currentPrice={currentPrice}
               />
               <View height={15} />
               <FollowValue
                 type='low'
                 onSet={onSetValues}
                 initialValue={String(currentLow)}
+                currentPrice={currentPrice}
               />
             </CardWrapper>
           </View>

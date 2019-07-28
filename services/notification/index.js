@@ -37,13 +37,12 @@ class NotificationServices {
       try {
         const data = await coinGecko.getCoins()
         console.log('=====Service running on Background!', data)
-        this._listeners.forEach(cb=> { cb('fetch',data) })
         for(const coin of data ) {
           if(this._coins[coin.id]){
-            // console.log('Processing coin',coin.current_price, this._coins)
             this._processCoinPrice(coin)
           }
         }
+        this._listeners.forEach(cb=> { cb('fetch',data) })
       } catch (error) {
         console.log('====>Error on background Service', error)
       }
@@ -59,6 +58,7 @@ class NotificationServices {
 
     const pushNotification = message => {
       UserCoins.setCoin({ id: coin.id, ...this._coins[coin.id]})
+      this._coins = UserCoins.getCoins()
       PushNotification.localNotification({
         // bigText: 'Hello from MinhaCrypto androiders', // (optional) default: "message" prop
         // subText: 'This is the subtext for minhacrypto', // (optional) default: none

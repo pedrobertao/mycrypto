@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ActivityIndicator } from 'react-native'
 import { AreaChart } from 'react-native-svg-charts'
 import LinearGradient from 'react-native-linear-gradient'
@@ -64,9 +64,15 @@ export const GraphLoading = ({ loading }) => (
     />
   ))
 
-export const FollowValue = ({ type = 'High', initialValue = '0', onSet }) => {
+export const FollowValue = ({ type, initialValue = '0', onSet, currentPrice }) => {
   const [value, setValue] = useState(initialValue)
   const [current, setCurrent] = useState(initialValue)
+
+  useEffect(() => {
+    setValue(initialValue)
+    setCurrent(initialValue)
+  }, [currentPrice])
+
   return (
     <View align='center' justify='space-around' row>
       <Text transform='capitalize' size={14} font='regular' secondary>{type}</Text>

@@ -10,8 +10,8 @@ export const FollowInput = styled.TextInput.attrs({
     color: ${systemColors.white};
     border-bottom-width: 1;
     border-bottom-color: ${systemColors.blue};
-    width: 85px;
-    margin-horizontal: 15px;
+    width: 90px;
+    margin-horizontal: 20px;
     font-size: 16px;
     padding: 0;
     text-align: center;
@@ -19,11 +19,12 @@ export const FollowInput = styled.TextInput.attrs({
 
 export const CardWrapper = styled.View`
     height: 110px;
-    padding: 20px;
+    padding-horizontal: 10px;
+    padding-vertical: 15px;
     border-radius: 4;
     border-width: 1px;
     border-color: ${systemColors.secondary};
-    margin-vertical: 5px;
+    margin-vertical: 2px;
     justify-content: center;
 `
 
