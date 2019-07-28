@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Image, Alert, ScrollView, TouchableOpacity } from 'react-native'
 import dayjs from 'dayjs'
 import Icon from 'react-native-vector-icons/Feather'
-import BigNumber from 'bignumber.js'
 
 import { GradientContainer, Text, View, systemColors } from '../../components/elements'
-import { FollowInput, SetButton, CardWrapper } from './styled'
-import { Chart, FollowGradient, GraphOption, GraphLoading } from './elements'
+import { CardWrapper } from './styled'
+import { Chart, FollowGradient, GraphOption, GraphLoading, FollowValue, MarketStats, FollowIcon } from './elements'
 import coinGecko from '../../services/coingecko'
 import NotificationServices from '../../services/notification'
 // import Wallets from '../../services/coins' soon
@@ -14,11 +13,9 @@ import NotificationServices from '../../services/notification'
 const CryptoDetail = props => {
   const crypto = props.navigation.getParam('crypto', {})
 
-  const { high: prevHigh, low: prevLow } = NotificationServices.getCoin(crypto.id)
-  // const smallCurrent = new BigNumber(crypto.current_price).precision(4)
+  const { high: currentHigh, low: currentLow } = NotificationServices.getCoin(crypto.id)
   const [currentPrice, setCurrentPrice] = useState(crypto.current_price)
   const [chartData, setMarketChart] = useState({ from: 'day', prices: [], loading: true })
-  const [followValues, setFollowValues] = useState({ high: String(prevHigh), low: String(prevLow) })
   const [isFollowing, setIsFollowing] = useState(NotificationServices.isFollowing(crypto.id))
 
   const priceListener = (type, data) => {
@@ -36,7 +33,7 @@ const CryptoDetail = props => {
       const { prices } = await coinGecko.getCoinStats(id, from, to)
       setMarketChart(chartData => ({ ...chartData, prices, loading: false }))
     } catch (error) {
-      console.log('====>Error Data', error, error.message)
+      console.log('====>Error get Prices', error, error.message)
       setMarketChart(chartData => ({ ...chartData, loading: false }))
     }
   }
@@ -54,15 +51,14 @@ const CryptoDetail = props => {
     if (isFollowing) {
       NotificationServices.unfollow(crypto.id)
     } else {
-      NotificationServices.follow({ id: crypto.id })
+      NotificationServices.follow(crypto.id)
     }
   }
 
-  const followCurrentValues = () => (
-    NotificationServices.follow({
+  const onSetValues = (type, value) => (
+    NotificationServices.setFollowValues({
       id: crypto.id,
-      high: followValues.high,
-      low: followValues.low
+      [type]: value
     })
   )
 
@@ -73,32 +69,34 @@ const CryptoDetail = props => {
           <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <Icon color={systemColors.white} size={25} name='arrow-left' />
           </TouchableOpacity>
-          <Text font='bold' size={20}>{crypto.name}  ({crypto.symbol.toUpperCase()})</Text>
-          <TouchableOpacity onPress={() => Alert.alert('Carteiras', 'Em breve')}>
+          <Text font='bold' size={20}>
+            {crypto.name}  ({crypto.symbol.toUpperCase()})
+          </Text>
+          <TouchableOpacity onPress={() => Alert.alert('Wallets', '#SOON')}>
             <Icon color={systemColors.white} size={20} name='credit-card' />
           </TouchableOpacity>
         </View>
 
         <View paddingY={20} align='center'>
-          <Image source={{ uri: crypto.image }} style={{ height: 50 * 0.8, width: 50 * 0.8 }} />
-          <Text style={{ marginTop: 5 }}>{currentPrice}$</Text>
-          <Text size={16} style={{ color: crypto.price_change_percentage_24h > 0 ? systemColors.blue : systemColors.lightRed }}>
+          <Image source={{ uri: crypto.image }} style={{ height: 50 * 0.8, width: 50 * 0.8, marginBottom: 5 }} />
+          <Text>{currentPrice}$</Text>
+          <Text size={16} variation={crypto.price_change_percentage_24h}>
             {crypto.price_change_percentage_24h.toFixed(2)}%
           </Text>
         </View>
         <View paddingX={30}>
-          <View row justify='space-between' align='center'>
-            <Text size={12}>Market Cap</Text>
-            <Text secondary>{new BigNumber(crypto.market_cap).toFormat()}</Text>
-          </View>
-          <View row justify='space-between' align='center'>
-            <Text size={12}>Total Volume</Text>
-            <Text secondary>{new BigNumber(crypto.total_volume).toFormat()}</Text>
-          </View>
-          <View row justify='space-between' align='center'>
-            <Text size={12}>Circulating Supply</Text>
-            <Text secondary>{new BigNumber(crypto.circulating_supply).toFormat()}</Text>
-          </View>
+          <MarketStats
+            label='Market Cap'
+            value={crypto.market_cap}
+          />
+          <MarketStats
+            label='Total Volume'
+            value={crypto.total_volume}
+          />
+          <MarketStats
+            label='Circulating Supply'
+            value={crypto.circulating_supply}
+          />
         </View>
 
         <GraphLoading loading={chartData.loading} />
@@ -117,61 +115,26 @@ const CryptoDetail = props => {
         </View>
 
         <View height={50 / 2} />
+
         <View flex={1} row justify='center'>
-          <TouchableOpacity
-            onPress={onFollow}
-            style={{
-              width: '40%',
-              alignItems: 'center',
-              marginBottom: 5
-            }}>
-            <Icon
-              name={isFollowing ? 'eye-off' : 'eye'}
-              color={systemColors.secondary}
-              size={32 * 0.8}
-            />
-            <Text size={10}>{isFollowing ? 'Unfollow' : 'Follow'}</Text>
-          </TouchableOpacity>
+          <FollowIcon onPress={onFollow} disabled={isFollowing} />
         </View>
 
         {isFollowing && (
           <View row justify='center'>
             <CardWrapper>
               <FollowGradient />
-              <View align='center' justify='space-between' row>
-                <Text size={14} font='regular' secondary>High</Text>
-                <View align='center'>
-                  <FollowInput
-                    placeholder='Not set yet'
-                    value={followValues.high}
-                    onChangeText={high => setFollowValues(followValues =>
-                      ({ ...followValues, high }))}
-                    editable={isFollowing}
-                  />
-                  <Text size={9} secondary>Current: {followValues.high}</Text>
-                </View>
-                <SetButton
-                  onPress={followCurrentValues}>
-                  <Text size={12}>SET</Text>
-                </SetButton>
-              </View>
+              <FollowValue
+                type='high'
+                onSet={onSetValues}
+                initialValue={String(currentHigh)}
+              />
               <View height={15} />
-              <View align='center' justify='space-around' row>
-                <Text size={14} font='regular' secondary>Low</Text>
-                <View align='center'>
-                  <FollowInput
-                    value={followValues.low}
-                    onChangeText={low => setFollowValues(followValues =>
-                      ({ ...followValues, low }))}
-                    editable={isFollowing}
-                  />
-                  <Text size={9} secondary>Current: {followValues.low}</Text>
-                </View>
-                <SetButton
-                  onPress={followCurrentValues}>
-                  <Text size={12}>SET</Text>
-                </SetButton>
-              </View>
+              <FollowValue
+                type='low'
+                onSet={onSetValues}
+                initialValue={String(currentLow)}
+              />
             </CardWrapper>
           </View>
         )}

@@ -27,6 +27,9 @@ export const Text = styled.Text`
   color: ${({ color, secondary }) => secondary ? systemColors.secondary : color};
   font-family: AvenirNext-${({ font }) => font};
   ${({ transform }) => transform && `text-transform: ${transform}`}
+  ${({ variation }) => variation && `color: ${variation >= 0 ? systemColors.blue : systemColors.lightRed};`}
+  ${({ align }) => align && `text-align:${align}`}
+  ${({ margin }) => margin && `margin: ${margin}px`};
 `
 
 Text.defaultProps = {

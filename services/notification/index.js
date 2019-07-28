@@ -40,7 +40,7 @@ class NotificationServices {
         this._listeners.forEach(cb=> { cb('fetch',data) })
         for(const coin of data ) {
           if(this._coins[coin.id]){
-            console.log('Processing coin',coin.current_price, this._coins)
+            // console.log('Processing coin',coin.current_price, this._coins)
             this._processCoinPrice(coin)
           }
         }
@@ -95,9 +95,45 @@ class NotificationServices {
     return !!this._coins[id]
   }
 
-  follow = ({id, high = Number.MAX_SAFE_INTEGER, low = 0 }) => {
-    this._coins[id] = { high: Number(high), low: Number(low) }
-    UserCoins.setCoin({ id })
+  getCoin = id => {
+    let high = 0;
+    let low = 0;
+    if(this._coins[id]){
+      high = this._coins[id].high
+      low = this._coins[id].low
+    }
+    console.log('=====>Inner get Coins',this._coins[id])
+
+    return {
+      id,
+      high: high === Number.MAX_SAFE_INTEGER ? 0 : high,
+      low: low === 0 ? 0 : low
+    }
+  }
+
+  setFollowValues = ({id, high, low}) => {
+    let prevHigh = 0;
+    let prevLow = 0;
+    
+    let updatedHigh;
+    let updatedLow;
+
+    if(this._coins[id]){
+      prevHigh = this._coins[id].high
+      prevLow = this._coins[id].low
+    }
+    updatedHigh = Number(high || prevHigh)
+    updatedLow = Number(low || prevLow)
+      
+    this._coins[id] = { high: updatedHigh, low: updatedLow }
+    UserCoins.setCoin({ id, ...this._coins[id] })
+  }
+  
+  follow = id => {
+    if(!this._coins[id]){
+      this._coins[id] = { high: Number.MAX_SAFE_INTEGER, low: 0}
+    }
+    UserCoins.setCoin({ id, ...this._coins[id] })
     this._listeners.map(cb => cb('follow', id))
   }
 

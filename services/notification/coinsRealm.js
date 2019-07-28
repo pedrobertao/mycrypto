@@ -48,7 +48,6 @@ UserCoins.addCoin = id => {
         follow: true
       }, true)
     })
-    console.log('====>AddCoin', UserCoins.objectForPrimaryKey(Coin.name, id))
   }
   return UserCoins.objectForPrimaryKey(Coin.name, id)
 }
@@ -60,8 +59,6 @@ UserCoins.setCoin = ({ id, high = Number.MAX_SAFE_INTEGER, low = 0 }) => {
     coinToSet.low = low
     coinToSet.follow = true
   })
-  console.log('====>SetCoin', coinToSet)
-
   return coinToSet
 }
 

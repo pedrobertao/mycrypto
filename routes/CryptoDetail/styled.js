@@ -34,10 +34,10 @@ export const SetButton = styled.TouchableOpacity`
     border-radius: 6px;
     align-items: center;
     width: 35px;
-    z-index: 999;
-    /* position: absolute;
-    elevation: 10;
-    margin-left: 10;
-    right: 90;
-    top: 40; */
+`
+
+export const FollowButton = styled.TouchableOpacity`
+    width: 40%;
+    align-items: center;
+    margin-bottom: 5px;
 `

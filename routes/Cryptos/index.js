@@ -4,6 +4,7 @@ import { FlatList } from 'react-native'
 import { GradientContainer, Container, View, Text, systemColors } from '../../components/elements'
 import CryptoItem from './item'
 import Notifications from '../../services/notification'
+import coinGecko from '../../services/coingecko'
 
 const useCoins = (navigation) => {
   const [coins, setCoins] = useState({
@@ -19,6 +20,7 @@ const useCoins = (navigation) => {
     setCoins(coins => ({ ...coins, loading: true }))
     try {
       // const cryptoCoins = require('./mockCrypto.json')
+      const cryptoCoins = await coinGecko.getCoins()
       setCoins(coins => ({
         ...coins,
         loading: false,
@@ -27,9 +29,9 @@ const useCoins = (navigation) => {
         otherCoins: cryptoCoins.filter(c => !Notifications.coins[c.id]),
         error: false
       }))
-      // navigateToDetail(cryptoCoins[0])
+      // navigation.navigate('detail', { crypto: cryptoCoins[0] })
     } catch (error) {
-      console.warn('====>', error.message)
+      console.log('====>Error Update Coins', error.message)
       setCoins(coins => ({ ...coins, loading: false, error: true }))
     }
   }
@@ -58,14 +60,6 @@ export default ({ navigation }) => {
   const coins = useCoins(navigation)
   const navigateToDetail = crypto => navigation.navigate('detail', { crypto })
 
-  // const [test, setTest] = useState(false)
-  // useEffect(() => {
-  //   navigation.addListener('didFocus', () => {
-  //     useEffect(() => {
-  //       console.log('E AE MANO ?!?!?!?!', coins)
-  //     }, [coins])
-  //   })
-  // }, [])
   const renderEmptyList = () => (
     <Text secondary>{
       coins.loading
@@ -83,12 +77,9 @@ export default ({ navigation }) => {
   return (
     <GradientContainer>
       <Container background='transparent'>
-        <Text font='regular' style={{
-          fontSize: 20,
-          textAlign: 'center',
-          margin: 10,
-          color: systemColors.white
-        }}>MINHA CRYPTO</Text>
+        <Text size={20} color={systemColors.white} align='center' font='regular'>
+        MY CRYPTO
+        </Text>
 
         <View flex={1} paddingX={30}>
           <Text>My Cryptos</Text>
