@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { Path, Defs, LinearGradient as LinearGradientSvg, Stop } from 'react-native-svg'
 import BigNumber from 'bignumber.js'
 import Icon from 'react-native-vector-icons/Feather'
+import NotificationServices from '../../services/notification'
 
 import { View, Text, systemColors } from '../../components/elements'
 import { SetButton, FollowInput, FollowButton } from './styled'
@@ -64,14 +65,21 @@ export const GraphLoading = ({ loading }) => (
     />
   ))
 
-export const FollowValue = ({ type, initialValue = '0', onSet, currentPrice }) => {
+export const FollowValue = ({ type, initialValue = '0', onSet, id }) => {
   const [value, setValue] = useState(initialValue)
   const [current, setCurrent] = useState(initialValue)
 
+  const priceListener = listenerType => {
+    if (listenerType !== 'fetch') return
+    setCurrent(String(NotificationServices.getCoin(id)[type]))
+  }
+
   useEffect(() => {
-    setValue(initialValue)
-    setCurrent(initialValue)
-  }, [currentPrice])
+    NotificationServices.addListener(priceListener)
+    return () => {
+      NotificationServices.removeListener(priceListener)
+    }
+  }, [])
 
   return (
     <View align='center' justify='space-around' row>

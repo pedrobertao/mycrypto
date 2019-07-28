@@ -29,7 +29,7 @@ const Item = ({ item, onPress }) => (
             {item.name}({item.symbol.toUpperCase()})
           </Text>
           <Text font='bold' size={16}>
-            {new BigNumber(item.current_price).precision(5).toFormat()} $
+            {item.current_price.toPrecision(4)} $
           </Text>
         </View>
         <View align='center' justify='space-between' row>

@@ -15,14 +15,14 @@ const CryptoDetail = props => {
 
   const { high: currentHigh, low: currentLow } = NotificationServices.getCoin(crypto.id)
 
-  const [currentPrice, setCurrentPrice] = useState(crypto.current_price)
+  const [currentPrice, setCurrentPrice] = useState(crypto.current_price.toPrecision(4))
   const [chartData, setMarketChart] = useState({ from: 'day', prices: [], loading: true })
   const [isFollowing, setIsFollowing] = useState(NotificationServices.isFollowing(crypto.id))
 
   const priceListener = (type, data) => {
     if (type !== 'fetch') return
     const thisCoin = data.find(d => d.id === crypto.id)
-    if (thisCoin.current_price !== currentPrice) setCurrentPrice(thisCoin.current_price)
+    setCurrentPrice(thisCoin.current_price.toPrecision(4))
   }
 
   const getPrices = async (id, fromLabel) => {
@@ -80,7 +80,7 @@ const CryptoDetail = props => {
 
         <View paddingY={20} align='center'>
           <Image source={{ uri: crypto.image }} style={{ height: 50 * 0.8, width: 50 * 0.8, marginBottom: 5 }} />
-          <Text>{currentPrice}$</Text>
+          <Text>{currentPrice} $</Text>
           <Text size={16} variation={crypto.price_change_percentage_24h}>
             {crypto.price_change_percentage_24h.toFixed(2)}%
           </Text>
@@ -129,14 +129,14 @@ const CryptoDetail = props => {
                 type='high'
                 onSet={onSetValues}
                 initialValue={String(currentHigh)}
-                currentPrice={currentPrice}
+                id={crypto.id}
               />
               <View height={15} />
               <FollowValue
                 type='low'
                 onSet={onSetValues}
                 initialValue={String(currentLow)}
-                currentPrice={currentPrice}
+                id={crypto.id}
               />
             </CardWrapper>
           </View>

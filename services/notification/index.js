@@ -42,9 +42,10 @@ class NotificationServices {
             this._processCoinPrice(coin)
           }
         }
+        this._coins = UserCoins.getCoins()
         this._listeners.forEach(cb=> { cb('fetch',data) })
       } catch (error) {
-        console.log('====>Error on background Service', error)
+        console.log('====>Error on background Service', error.message)
       }
     }
     getCoins()
@@ -58,7 +59,6 @@ class NotificationServices {
 
     const pushNotification = message => {
       UserCoins.setCoin({ id: coin.id, ...this._coins[coin.id]})
-      this._coins = UserCoins.getCoins()
       PushNotification.localNotification({
         // bigText: 'Hello from MinhaCrypto androiders', // (optional) default: "message" prop
         // subText: 'This is the subtext for minhacrypto', // (optional) default: none
@@ -102,7 +102,6 @@ class NotificationServices {
       high = this._coins[id].high
       low = this._coins[id].low
     }
-    console.log('=====>Inner get Coins',this._coins[id])
 
     return {
       id,
