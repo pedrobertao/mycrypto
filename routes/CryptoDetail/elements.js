@@ -48,7 +48,7 @@ export const FollowGradient = () => (
 
 export const GraphOption = ({ selected, children }) => (
   <View width='100%' padding={5}>
-    <Text style={{ color: selected ? systemColors.blue : 'rgba(255,255,255,0.2)' }}>
+    <Text transform='uppercase' color={selected ? systemColors.blue : 'rgba(255,255,255,0.2)'}>
     1 {children}
     </Text>
   </View>

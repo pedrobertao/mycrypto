@@ -26,6 +26,7 @@ export const Text = styled.Text`
   font-size: ${({ size }) => size}px;
   color: ${({ color, secondary }) => secondary ? systemColors.secondary : color};
   font-family: AvenirNext-${({ font }) => font};
+  ${({ transform }) => transform && `text-transform: ${transform}`}
 `
 
 Text.defaultProps = {

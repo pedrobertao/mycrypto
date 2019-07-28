@@ -12,8 +12,14 @@ coinGecko.getCoins = async () => {
   return data
 }
 
+/**
+ * @returns {Object}
+ */
 coinGecko.getCoinStats = async (id, from, to) => {
   const { data } = await coinGecko.get(`/coins/${id}/market_chart/range?vs_currency=usd&from=${from}&to=${to}`)
   return data
 }
+
+coinGecko.STATS_OPTIONS = ['hour', 'day', 'week']
+
 export default coinGecko
