@@ -31,7 +31,6 @@ const useCoins = (navigation) => {
       }))
       // navigation.navigate('detail', { crypto: cryptoCoins[0] })
     } catch (error) {
-      console.log('====>Error Update Coins', error.message)
       setCoins(coins => ({ ...coins, loading: false, error: true }))
     }
   }

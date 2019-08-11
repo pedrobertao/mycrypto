@@ -5,15 +5,14 @@ import Reactotron from 'reactotron-react-native'
 
 import Cryptos from './Cryptos'
 import CryptoDetail from './CryptoDetail'
-import UserCoins from '../services/notification/coinsRealm'
 
 Reactotron
   .configure({
     enabled: true,
     host: '192.168.0.12' // server ip
-  }) // controls connection & communication settings
-  .useReactNative() // add all built-in react native plugins
-  .connect() // let's connect!
+  })
+  .useReactNative()
+  .connect()
 
 console.log = (...msg) => Reactotron.display({
   name: 'MyCrypto',
@@ -27,10 +26,6 @@ const cryptoStack = createStackNavigator({
 }, {
   headerMode: 'none'
 })
-
-// const drawerNavigator = createDrawerNavigator({
-//   home: cryptoStack
-// })
 
 PushNotification.configure({
   // (optional) Called when Token is generated (iOS and Android)

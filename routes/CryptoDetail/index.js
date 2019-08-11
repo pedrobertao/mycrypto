@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { Image, Alert, ScrollView, TouchableOpacity } from 'react-native'
+import { Alert, ScrollView, TouchableOpacity } from 'react-native'
 import dayjs from 'dayjs'
 import Icon from 'react-native-vector-icons/Feather'
 
 import { GradientContainer, Text, View, systemColors } from '../../components/elements'
-import { CardWrapper } from './styled'
+import { CardWrapper, CryptoImg } from './styled'
 import { Chart, FollowGradient, GraphOption, GraphLoading, FollowValue, MarketStats, FollowIcon } from './elements'
 import coinGecko from '../../services/coingecko'
 import NotificationServices from '../../services/notification'
+import { formatNumber } from '../../utils/format'
 // import Wallets from '../../services/coins' soon
 
 const CryptoDetail = props => {
@@ -15,14 +16,14 @@ const CryptoDetail = props => {
 
   const { high: currentHigh, low: currentLow } = NotificationServices.getCoin(crypto.id)
 
-  const [currentPrice, setCurrentPrice] = useState(crypto.current_price.toPrecision(4))
+  const [currentPrice, setCurrentPrice] = useState(formatNumber(crypto.current_price))
   const [chartData, setMarketChart] = useState({ from: 'day', prices: [], loading: true })
   const [isFollowing, setIsFollowing] = useState(NotificationServices.isFollowing(crypto.id))
 
   const priceListener = (type, data) => {
     if (type !== 'fetch') return
     const thisCoin = data.find(d => d.id === crypto.id)
-    setCurrentPrice(thisCoin.current_price.toPrecision(4))
+    setCurrentPrice(formatNumber(thisCoin.current_price))
   }
 
   const getPrices = async (id, fromLabel) => {
@@ -34,7 +35,6 @@ const CryptoDetail = props => {
       const { prices } = await coinGecko.getCoinStats(id, from, to)
       setMarketChart(chartData => ({ ...chartData, prices, loading: false }))
     } catch (error) {
-      console.log('====>Error get Prices', error, error.message)
       setMarketChart(chartData => ({ ...chartData, loading: false }))
     }
   }
@@ -79,7 +79,7 @@ const CryptoDetail = props => {
         </View>
 
         <View paddingY={20} align='center'>
-          <Image source={{ uri: crypto.image }} style={{ height: 50 * 0.8, width: 50 * 0.8, marginBottom: 5 }} />
+          <CryptoImg source={{ uri: crypto.image }} />
           <Text>{currentPrice} $</Text>
           <Text size={16} variation={crypto.price_change_percentage_24h}>
             {crypto.price_change_percentage_24h.toFixed(2)}%
@@ -103,19 +103,19 @@ const CryptoDetail = props => {
         <GraphLoading loading={chartData.loading} />
 
         <Chart data={chartData.prices} />
-        <View style={{ marginVertical: 5 }} row justify='space-around'>
+        <View marginY={5} row justify='space-around'>
           {coinGecko.STATS_OPTIONS.map(option => (
             <TouchableOpacity
               onPress={() => setMarketChart({ ...chartData, from: option })}
               key={`graph_${option}`}>
               <GraphOption selected={option === chartData.from}>
-                {option.toUpperCase()}
+                {option}
               </GraphOption>
             </TouchableOpacity>
           ))}
         </View>
 
-        <View height={50 / 2} />
+        <View height={25} />
 
         <View flex={1} row justify='center'>
           <FollowIcon onPress={onFollow} disabled={isFollowing} />

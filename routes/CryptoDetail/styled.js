@@ -42,3 +42,9 @@ export const FollowButton = styled.TouchableOpacity`
     align-items: center;
     margin-bottom: 5px;
 `
+
+export const CryptoImg = styled.Image`
+    height: 46;
+    width: 46;
+    margin-bottom: 5px;
+`
